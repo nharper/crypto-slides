@@ -55,11 +55,11 @@ denial of service by blocking all messages.
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>
 Alice and Bob meet (out-of-band) and agree on a secret key to use.
 </p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p>
@@ -131,7 +131,7 @@ with the plaintext before encrypting the next block.
 <h2>ECB Mode</h2>
 <div class="body">
 <div class="main-image">
-<img src="/images/ECB_encryption.svg" alt="ECB encryption mode diagram" class="full">
+<img src="images/ECB_encryption.svg" alt="ECB encryption mode diagram" class="full">
 <cite>Source: <a href="https://en.wikipedia.org/wiki/File:ECB_encryption.svg">https://en.wikipedia.org/wiki/File:ECB_encryption.svg</a></cite>
 </div>
 </div>
@@ -141,22 +141,22 @@ with the plaintext before encrypting the next block.
 <h2>ECB reveals Plaintext Structure</h2>
 <div class="body">
 <div id="tux-row">
-<img src="/images/crnet.png">
+<img src="images/crnet.png">
 <span>&#x2192;</span>
-<img src="/images/crnet.ecb.png">
+<img src="images/crnet.ecb.png">
 </div>
 </div>
 </div>
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>Alice and Bob use a block cipher in ECB mode.</p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p class="sad">
-<img src="/images/ic_mood_bad_white_36px.svg">
+<img src="images/ic_mood_bad_white_36px.svg">
 Eve can look at the ciphertexts sent by Alice and Bob, and glean a lot of
 information about what is being transmitted. When data is encrypted with ECB
 mode, <strong>confidentiality</strong> is severely compromised.
@@ -168,7 +168,7 @@ mode, <strong>confidentiality</strong> is severely compromised.
 <h2>CBC Mode</h2>
 <div class="body">
 <div class="main-image">
-<img src="/images/CBC_encryption.svg" alt="CBC encryption mode diagram" class="full">
+<img src="images/CBC_encryption.svg" alt="CBC encryption mode diagram" class="full">
 <cite>Source: <a href="https://en.wikipedia.org/wiki/File:CBC_encryption.svg">https://en.wikipedia.org/wiki/File:CBC_encryption.svg</a></cite>
 </div>
 </div>
@@ -221,13 +221,13 @@ block.
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>Alice and Bob use a block cipher in CBC mode.</p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p class="sad">
-<img src="/images/ic_mood_bad_white_36px.svg">
+<img src="images/ic_mood_bad_white_36px.svg">
 Mallory might take a ciphertext from Alice, and send it to Bob with bits flipped
 to use Bob as a padding oracle to decrypt it. In the presence of such an oracle,
 <strong>confidentiality</strong> is lost.
@@ -260,7 +260,7 @@ A block cipher can also be made into a stream cipher using CTR mode.
 <h2>CTR Mode</h2>
 <div class="body">
 <div class="main-image">
-<img src="/images/CTR_encryption_2.svg" alt="CTR encryption mode diagram" class="full">
+<img src="images/CTR_encryption_2.svg" alt="CTR encryption mode diagram" class="full">
 <cite>Source: <a href="https://en.wikipedia.org/wiki/File:CTR_encryption_2.svg">https://en.wikipedia.org/wiki/File:CTR_encryption_2.svg</a></cite>
 </div>
 </div>
@@ -268,13 +268,13 @@ A block cipher can also be made into a stream cipher using CTR mode.
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>Alice and Bob encrypt their messages using a stream cipher.</p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p class="sad">
-<img src="/images/ic_mood_bad_white_36px.svg">
+<img src="images/ic_mood_bad_white_36px.svg">
 Mallory can flip bits on messages sent between Alice and Bob. Mallory can't
 tell what the message is, but if Mallory knows the structure of the plaintext,
 specific bits can be targeted to change the plaintext to have a different
@@ -323,7 +323,7 @@ follows:
 <i>Open(key, nonce, ciphertext, ad) = plaintext OR error</i>
 </p>
 <p class="sad">
-<img src="/images/ic_warning_white_36px.svg">
+<img src="images/ic_warning_white_36px.svg">
 Never use a <i>(key, nonce)</i> pair more than once.
 </p>
 <p>
@@ -336,23 +336,23 @@ More information on AEADs:
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>
 Alice and Bob use an AEAD, and keep count of how many messages they've
 sent/received, putting that value in the <i>associated data</i>.
 </p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p class="happy">
-<img src="/images/ic_mood_white_36px.svg">
+<img src="images/ic_mood_white_36px.svg">
 If Mallory tries to replay a message, the receiving party will have a
 different count, causing the AEAD to fail to open. Without knowing Alice and
 Bob's key, there's not much Mallory can do to disrupt them besides a denial
 of service.
 </p>
 <p class="sad">
-<img src="/images/ic_mood_bad_white_36px.svg">
+<img src="images/ic_mood_bad_white_36px.svg">
 If Alice or Bob lose control of their shared key and Eve or Mallory get ahold
 of it, then there's trouble. If Eve recorded traffic between Alice and Bob, Eve
 can now decrypt that traffic (and future traffic). Mallory can do the same, and
@@ -513,20 +513,20 @@ A KDF is also useful for deriving multiple keys from the same secret.
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>
 Alice and Bob do a Diffie-Hellman key exchange, run that output through a KDF,
 and use the resulting key with an AEAD.
 </p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p class="happy">
-<img src="/images/ic_mood_white_36px.svg">
+<img src="images/ic_mood_white_36px.svg">
 Eve cannot eavesdrop on this conversation.
 </p>
 <p class="sad">
-<img src="/images/ic_mood_bad_white_36px.svg">
+<img src="images/ic_mood_bad_white_36px.svg">
 Mallory can man-in-the-middle the connection between Alice and Bob, so that
 Alice does DH with Mallory (instead of Bob), and Bob does DH with Mallory
 (instead of Alice). Mallory now has a key for each of Alice and Bob, and passes
@@ -608,17 +608,17 @@ sends the content under symmetric encryption.
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p class="a">
 Alice obtains Bob's public key. Alice generates a random key, encrypts the
 key with RSA, and encrypts the message using an AEAD under the random key.
 </p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p>This is basically TLS 1.2 and older.</p>
 <p class="happy">
-<img src="/images/ic_mood_white_36px.svg">
+<img src="images/ic_mood_white_36px.svg">
 Mallory cannot MitM this connection without Bob's private key.
 </p>
 <p>
@@ -626,7 +626,7 @@ Alice authenticates Bob's identity, but Bob does not know whether Alice or
 Mallory is on the other end of the connection.
 </p>
 <p class="sad">
-<img src="/images/ic_mood_bad_white_36px.svg">
+<img src="images/ic_mood_bad_white_36px.svg">
 Suppose Bob's private key gets compromised and ends up in Eve and Mallory's
 possession. Any past and future traffic that Eve has recorded can be decrypted
 by Eve. Mallory can do the same as Eve, as well as impersonate Bob.
@@ -677,7 +677,7 @@ but anyone can verify.
 
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <div>
 <p class="a">
 Alice generates a DH key and sends the public value to Bob.
@@ -697,17 +697,17 @@ Both parties compute a shared secret from the DH values and encrypt messages
 using an AEAD with a key derived from the shared secret.
 </p>
 </div>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 <p>This is basically TLS 1.3.</p>
 <p class="happy">
-<img src="/images/ic_mood_white_36px.svg">
+<img src="images/ic_mood_white_36px.svg">
 If Bob's private key does not end up in anyone else's possession, Mallory cannot
 MitM this connection without Alice detecting.
 </p>
 <p class="happy">
-<img src="/images/ic_mood_white_36px.svg">
+<img src="images/ic_mood_white_36px.svg">
 If Eve records traffic between Alice and Bob and later gains possession of Bob's
 private key, Eve cannot decrypt past traffic.
 </p>
@@ -729,11 +729,11 @@ of the connection and for the whole duration.
 Template alice-and-bob slide
 <div class="slide ab">
 <div class="ab-header">
-<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_box_white_48px.svg">
 <p>
 Setup
 </p>
-<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+<img class="ab-icon" src="images/ic_account_circle_white_48px.svg">
 </div>
 <div class="body">
 </div>
