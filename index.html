@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="index.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700|Source+Sans+Pro:400,400i,700,700i" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="slide visible title">
+<header>
+<h1>Conversations with Alice and Bob</h1>
+<h2>An introduction to symmetric and asymmetric cryptography</h2>
+</header>
+<div class="body">
+<p>
+Nick Harper<br>
+May 5, 2017
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Cast of Characters</h2>
+<div class="body">
+<p>
+<strong>Alice</strong> and <strong>Bob</strong> want to communicate with each
+other so that no one else knows what they are saying. Specifically, they want
+three properties:
+<dl>
+<dt>Confidentiality</dt>
+<dd>No one apart from Alice and Bob know what is being said.</dd>
+<dt>Authenticity</dt>
+<dd>Alice knows that the party on the other end is Bob, and not someone else.</dd>
+<dt>Integrity</dt>
+<dd>When Alice (or Bob) receives a message, they know it has not been tampered with.</dd>
+</dl>
+<p>
+<strong>Eve</strong> wants to eavesdrop on Alice and Bob's communications. Eve
+can listen in on everything sent between Alice and Bob, but does not interfere
+with the messages. Eve's goal is to read the plaintext of their communications.
+</p>
+<p>
+<strong>Mallory</strong>, like Eve, is also interested in Alice and Bob's
+communications. In addition to listening to messages, Mallory may also intercept
+messages between Alice and Bob. Mallory might change messages, create new ones,
+or delay or prevent delivery of messages. However, Mallory will not create a
+denial of service by blocking all messages.
+</p>
+</div>
+</div>
+
+<!-- TODO: Put a section header for Symmetric crypto here? -->
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>
+Alice and Bob meet (out-of-band) and agree on a secret key to use.
+</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p>
+They plan to use symmetric crypto to encrypt/decrypt their messages, using
+the agreed-upon key.
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Symmetric crypto: block ciphers</h2>
+<div class="body">
+<ul>
+<li>A block cipher operates on blocks of a fixed bit length.</li>
+<li>
+Encryption function takes a key and a block of plaintext, and outputs a block of
+ciphertext.<br>
+<i>E(k, p) = c</i>
+</li>
+<li>
+Decryption function takes a key and a block of ciphertext, and outputs a block
+of plaintext.<br>
+<i>D(k, c) = p</i><br>
+<i>D(k, E(k, p)) = p</i>
+</li>
+<li>
+Plaintext and ciphertext inputs must be exactly the size of the block.
+</li>
+<li>
+Examples: AES (128-, 192-, and 256-bit blocks), 3DES (64-bit blocks), DES
+(64-bit blocks)
+</li>
+</ul>
+</div>
+</div>
+
+<div class="slide">
+<h2>Symmetric crypto: block ciphers</h2>
+<div class="body">
+<p>
+Most plaintexts aren't exactly 1 block in size. To use with a block cipher,
+they first need to be padded to have a length which is a multiple of the block
+size.
+</p>
+<h3>Padding</h3>
+<p>
+PKCS#7 is a common form of padding, and will be used in the examples here.
+Padding bytes are added to the plaintext until its length is a multiple of the
+block size, and at least one padding byte is added.
+</p>
+<p>
+For example, if the plaintext to be padded is
+<input class="block" id="padding-pt" value="Hello!">
+(as an ASCII string), then the resulting plaintext
+<span id="padding-plural">block is</span> <span id="padding-padded"></span>.
+</p>
+<h3>Modes of Operation</h3>
+<p>
+<strong>ECB</strong> (electronic codebook) divides messages into blocks and
+encrypts each one separately.
+</p>
+<p>
+<strong>CBC</strong> (cipher block chaining) combines previous ciphertext block
+with the plaintext before encrypting the next block.
+</div>
+</div>
+
+<div class="slide">
+<h2>ECB Mode</h2>
+<div class="body">
+<div class="main-image">
+<img src="/images/ECB_encryption.svg" alt="ECB encryption mode diagram" class="full">
+<cite>Source: <a href="https://en.wikipedia.org/wiki/File:ECB_encryption.svg">https://en.wikipedia.org/wiki/File:ECB_encryption.svg</a></cite>
+</div>
+</div>
+</div>
+
+<div class="slide">
+<h2>ECB reveals Plaintext Structure</h2>
+<div class="body">
+<div id="tux-row">
+<img src="/images/crnet.png">
+<span>&#x2192;</span>
+<img src="/images/crnet.ecb.png">
+</div>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>Alice and Bob use a block cipher in ECB mode.</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p class="sad">
+<img src="/images/ic_mood_bad_white_36px.svg">
+Eve can look at the ciphertexts sent by Alice and Bob, and glean a lot of
+information about what is being transmitted. When data is encrypted with ECB
+mode, <strong>confidentiality</strong> is severely compromised.
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>CBC Mode</h2>
+<div class="body">
+<div class="main-image">
+<img src="/images/CBC_encryption.svg" alt="CBC encryption mode diagram" class="full">
+<cite>Source: <a href="https://en.wikipedia.org/wiki/File:CBC_encryption.svg">https://en.wikipedia.org/wiki/File:CBC_encryption.svg</a></cite>
+</div>
+</div>
+</div>
+
+<div class="slide">
+<h2>CBC Bitflipping</h2>
+<div class="body">
+<p>
+Flipping a bit in ciphertext (left) causes the corresponding plaintext (right)
+block to be garbled, but flips the corresponding bit in the <em>next</em>
+block.
+<p>
+<span id="bitflipCT1"></span> &#x2192; <span id="bitflipPT1"></span>
+</p>
+<p>
+<input class="block" id="bitflip-xor">
+</p>
+<p>
+<span id="bitflipCT2"></span> &#x2192; <span id="bitflipPT2"></span>
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>CBC Padding Oracle</h2>
+<div class="body">
+<table>
+<tr>
+<td class="label">IV: </td><td><span id="oracle-iv"></span></td>
+<td class="label">Ciphertext: </td><td><span id="oracle-ct"></span></td>
+</tr>
+<tr>
+<td class="label">XOR</td><td><span id="oracle-iv-xor"></span></td>
+<td></td><td><span id="oracle-ct-xor"></span></td>
+</tr>
+<tr>
+<td class="label">Trial IV: </td><td><span id="oracle-iv-trial"></span></td>
+<td class="label">Trial Ciphertext: </td><td><span id="oracle-ct-trial"></span></td>
+</tr>
+<tr>
+<td colspan="3" class="label">Decrypted Plaintext</td>
+<td><span id="oracle-pt"></span></td>
+</tr>
+</table>
+<button id="oracle-advance">Advance</button>
+<button id="oracle-reset">Reset</button>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>Alice and Bob use a block cipher in CBC mode.</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p class="sad">
+<img src="/images/ic_mood_bad_white_36px.svg">
+Mallory might take a ciphertext from Alice, and send it to Bob with bits flipped
+to use Bob as a padding oracle to decrypt it. In the presence of such an oracle,
+<strong>confidentiality</strong> is lost.
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Symmetric crypto: stream ciphers</h2>
+<div class="body">
+<ul>
+<li>
+A stream cipher takes a key (and a nonce) and generates a pseudo-random
+sequence.
+</li>
+<li>
+This <em>stream</em> of bytes can be XOR'd with the plaintext to generate
+ciphertext. (The ciphertext is XOR'd with the same stream to decrypt and
+generate plaintext.)
+</li>
+<li>Examples: ChaCha20, RC4</li>
+<li>
+A block cipher can also be made into a stream cipher using CTR mode.
+</li>
+</ul>
+</div>
+</div>
+
+<div class="slide">
+<h2>CTR Mode</h2>
+<div class="body">
+<div class="main-image">
+<img src="/images/CTR_encryption_2.svg" alt="CTR encryption mode diagram" class="full">
+<cite>Source: <a href="https://en.wikipedia.org/wiki/File:CTR_encryption_2.svg">https://en.wikipedia.org/wiki/File:CTR_encryption_2.svg</a></cite>
+</div>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>Alice and Bob encrypt their messages using a stream cipher.</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p class="sad">
+<img src="/images/ic_mood_bad_white_36px.svg">
+Mallory can flip bits on messages sent between Alice and Bob. Mallory can't
+tell what the message is, but if Mallory knows the structure of the plaintext,
+specific bits can be targeted to change the plaintext to have a different
+meaning. Using a stream cipher alone, <strong>integrity</strong> is lost.
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Message Authentication Codes</h2>
+<div class="body">
+<p>
+A <em>message authentication code (MAC)</em> is used to prove
+<strong>integrity</strong> and <strong>authenticity</strong> of a message.
+</p>
+<p>The <em>sign</em> operation of a MAC takes a key and message and returns a
+tag.<br>
+<i>S(k, m) = t</i>
+</p>
+<p>The <em>verify</em> operation of a MAC takes a key, message, and tag, and
+returns true iff the message and tag are not tampered with.<br>
+<i>V(k, m, t) = {true, false}</i>
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>AEADs</h2>
+<div class="body">
+<p>
+Improperly combining encryption and MAC is an easy way to create a vulnerability
+like a CBC padding oracle. See <a href="https://moxie.org/blog/the-cryptographic-doom-principle/">https://moxie.org/blog/the-cryptographic-doom-principle/</a>.
+Using an AEAD combines these operations in a safer, easier-to-use operation.
+</p>
+<p>
+An <em>AEAD (Authenticated Encryption with Associated Data)</em> combines
+encryption with a MAC into a single operation. It takes four inputs, a
+<i>key</i>, <i>nonce</i>, <i>plaintext</i>, and <i>associated data</i>.
+The resulting ciphertext guarantees <strong>confidentiality</strong> of the
+plaintext, as well as <strong>integrity</strong> of the plaintext and
+associated data (<i>ad</i>). An AEAD's operations are generally depicted as
+follows:
+</p>
+<p>
+<i>Seal(key, nonce, plaintext, ad) = ciphertext</i><br>
+<i>Open(key, nonce, ciphertext, ad) = plaintext OR error</i>
+</p>
+<p class="sad">
+<img src="/images/ic_warning_white_36px.svg">
+Never use a <i>(key, nonce)</i> pair more than once.
+</p>
+<p>
+More information on AEADs:
+<a href="https://www.imperialviolet.org/2015/05/16/aeads.html">https://www.imperialviolet.org/2015/05/16/aeads.html</a>
+</p>
+<p>Examples: AES-GCM, ChaCha20-Poly1305</p>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>
+Alice and Bob use an AEAD, and keep count of how many messages they've
+sent/received, putting that value in the <i>associated data</i>.
+</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p class="happy">
+<img src="/images/ic_mood_white_36px.svg">
+If Mallory tries to replay a message, the receiving party will have a
+different count, causing the AEAD to fail to open. Without knowing Alice and
+Bob's key, there's not much Mallory can do to disrupt them besides a denial
+of service.
+</p>
+<p class="sad">
+<img src="/images/ic_mood_bad_white_36px.svg">
+If Alice or Bob lose control of their shared key and Eve or Mallory get ahold
+of it, then there's trouble. If Eve recorded traffic between Alice and Bob, Eve
+can now decrypt that traffic (and future traffic). Mallory can do the same, and
+Mallory can also forge messages in the future.
+</p>
+</div>
+</div>
+
+<!-- TODO: Put a section header for asymmetric crypto here? -->
+
+<div class="slide">
+<h2>Asymmetric crypto</h2>
+<div class="body">
+<p>What if Alice and Bob can't meet out-of-band to exchange a secret?</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Diffie-Hellman key exchange</h2>
+<div class="body">
+<p>
+<em>Diffie-Hellman (DH) key exchange</em> is a method for two parties to agree
+on a shared secret without an eavesdropper finding out that secret.
+</p>
+<p>
+Each party computes a public and private value, and sends their public value to
+the other. When both parties do a computation with their private value and the
+other's public value, they end up at the same value.
+</p>
+<p>
+An eavesdropper who only sees these public values can't do a computation to
+arrive at that same value.
+<p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Diffie-Hellman Math: Group Theory</h2>
+<div class="body">
+<p>
+A <em>group</em> is a structure containing a set of elements and a binary
+operator on those elements. A set <i>G</i> and operator <i>&#x2218;</i> is a
+group if it satisfies the following properties:
+</p>
+<ul>
+<li>For all <i>a</i>, <i>b</i> in <i>G</i>, <i>a &#x2218; b</i> must also be in <i>G</i>.</li>
+<li>
+For all <i>a</i>, <i>b</i>, and <i>c</i> in <i>G</i>,
+<i>(a &#x2218; b) &#x2218; c = a &#x2218; (b &#x2218; c)</i>.
+</li>
+<li>
+There exists <i>i</i> in <i>G</i> such that for every <i>a</i> in <i>G</i>,
+<i>i &#x2218; a = a &#x2218; i = a</i>.
+</li>
+<li>
+For each <i>a</i> in <i>G</i>, there exists <i>b</i> in <i>G</i> such that
+<i>a &#x2218; b = b &#x2218; a = i</i>.
+</li>
+</ul>
+<p>
+A <em>cyclic group</em> is a group that can be created from a single generator
+element <i>g</i> in <i>G</i>. That is, by applying <i>g</i> successively it
+generates every element in the group.
+</p>
+<p>
+The <em>order</em> of a cyclic group is the number of times the generator
+<i>g</i> must be applied to get back to the identity <i>i</i>.
+</p>
+</div>
+<div class="notes">
+<p>
+Example: Integers under addition mod 4
+</p>
+<p>
+The set of elements is {0, 1, 2, 3} and the operation &#x2218; is + (mod 4). The
+identity <i>i</i> is 0, and a generator <i>g</i> is 1. Successive applications
+of the generator <i>g</i> generate all elements in the set. Zero applications
+gives us 0, one application is just <i>g</i>, 1+1 = 2, 1+1+1 = 3, and 1+1+1+1 =
+0 (mod 4).
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Diffie-Hellman Math</h2>
+<div class="body">
+<p>
+Diffie-Hellman is done on a cyclic group. Let's assume that a group has been
+chosen with generator <i>g</i> and order <i>n</i>. Diffie-Hellman works by
+doing the following:
+</p>
+<ul>
+<li>
+Alice picks a random integer <i>a &lt; n</i>, and Bob picks a random integer
+<i>b &lt; n</i>. <i>a</i> and <i>b</i> are private values.
+</li>
+<li>
+Alice computes <i>g<sup>a</sup></i>, that is <i>g</i> applied to itself <i>a</i>
+times, and sends it to Bob. Bob does similarly - computing <i>g<sup>b</sup></i>
+and sending it to Alice.
+</li>
+<li>
+Alice takes <i>g<sup>b</sup></i> from Bob and computes
+<i>(g<sup>b</sup>)<sup>a</sup></i>. Likewise, Bob computes
+<i>(g<sup>a</sup>)<sup>b</sup></i>. This is the shared secret.
+</li>
+</ul>
+</div>
+</div>
+
+<div class="slide">
+<h2>Diffie-Hellman</h2>
+<div class="body">
+<p>
+(Finite field) Diffie-Hellman uses integers under multiplication mod
+<i>p</i> (where <i>p</i> is some prime). The generator <i>g</i> is a
+primitive root (mod <i>p</i>).
+</p>
+<p>
+Elliptic Curve Diffie-Hellman (ECDH) uses points on an elliptic curve as
+the set for the group, with the generator <i>g</i> being the base point of
+the curve, and the operation is EC point addition. (When a curve like P-256 is
+specified, all of those parameters are encapsulated in the P-256 specification.)
+</p>
+<p>
+The security of Diffie-Hellman relies on it being a hard problem to compute
+<i>a</i> from <i>g<sup>a</sup></i> for that group. For Finite field DH, this is
+the <q>discrete logarithm</q> problem; for ECDH it is known as the
+<q>elliptic curve discrete logarithm</q> problem.
+</p>
+<p>
+Diffie-Hellman can be done on other groups. Using a supersingular isogeny group
+is one proposal for post-quantum key exchange. Other non-DH post-quantum key
+exchange algorithms also exist.
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Key Derivation Functions</h2>
+<div class="body">
+<p>
+A <em>key derivation function</em> takes some input (like the shared secret from
+DH) and outputs a value suitable to use as a crypto key while retaining the
+entropy from the input.
+</p>
+<p>
+The shared secret from DH can have some structure to it (depending on the
+group that was used), and an attacker with knowledge of this structure might
+be able to gain an advantage from that knowledge if the shared DH secret is
+used directly as a symmetric key.
+</p>
+<p>
+A KDF is also useful for deriving multiple keys from the same secret.
+</p>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>
+Alice and Bob do a Diffie-Hellman key exchange, run that output through a KDF,
+and use the resulting key with an AEAD.
+</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p class="happy">
+<img src="/images/ic_mood_white_36px.svg">
+Eve cannot eavesdrop on this conversation.
+</p>
+<p class="sad">
+<img src="/images/ic_mood_bad_white_36px.svg">
+Mallory can man-in-the-middle the connection between Alice and Bob, so that
+Alice does DH with Mallory (instead of Bob), and Bob does DH with Mallory
+(instead of Alice). Mallory now has a key for each of Alice and Bob, and passes
+messages between (possibly changing them if Mallory feels so inclined). Each
+of Alice and Bob think they're talking to the other when they're really talking
+to Mallory.
+</p>
+<p>
+Although this scheme provides <strong>confidentiality</strong> and
+<strong>integrity</strong>, neither Alice nor Bob really know who's on the
+other end (it could be Mallory instead), so it lacks
+<strong>authenticity</strong>.
+</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>RSA Encryption</h2>
+<div class="body">
+<p>
+Symmetric crypto uses the same key to encrypt and decrypt. With RSA, a public
+key is used to encrypt, and a private key is used to decrypt.
+</p>
+<h3>Generating a key</h3>
+<ul>
+<li>
+Pick random primes <i>p</i> and <i>q</i> so their product <i>n = pq</i> is
+of the desired bit length.
+</li>
+<li>
+Choose a public exponent <i>e</i>. Common choices are 3 or 65537.
+</li>
+<li>
+Calculate the private exponent <i>d</i> using knowledge of <i>p</i> and
+<i>q</i> so that for all <i>m &lt; n</i>,
+<i>(m<sup>e</sup>)<sup>d</sup> = m </i>(mod <i>n</i>).
+</li>
+<li>
+The values <i>n</i> and <i>e</i> form the public key, while <i>d</i> is part
+of the private key.
+</ul>
+<h3>Encrypting/decrypting</h3>
+<p>
+Assuming the message to encrypt is <i>m</i> and the encrypted ciphertext is
+<i>c</i>, the following formulas are used to encrypt/decrypt:
+</p>
+<ul>
+<li>Encryption: <i>c = m<sup>e</sup> </i>(mod <i>n</i>)</li>
+<li>Decryption: <i>m = c<sup>d</sup> </i>(mod <i>n</i>)</li>
+</ul>
+</div>
+<div class="notes">
+<ul>
+<li>Only values less than n can be encrypted/decrypted</li>
+<li>
+If the exponent and message are small, the resulting ciphertext might not do
+the modulus wrap-around. In this case, computing the root is very easy to
+recover the message from the ciphertext.
+</li>
+<li>
+In practice, raw RSA isn't used - instead it is used with padding. Some padding
+schemes (PKCS1v1.5) have pitfalls. Padding avoids the small message problem,
+but can introduce other problems. Recommend using RSASSA-OAEP.
+<ul>
+<li>PKCS1v1.5 padding is 0x00 0x02 (any non-zero bytes) 0x00 message.</li>
+<li>
+OAEP uses a mask generation function (MGF1 is the only one defined), which
+uses a hash function and deterministically turns input into desired length.
+</li>
+</ul>
+</li>
+<li>
+To encrypt something larger than n, one encrypts a symmetric key with RSA, and
+sends the content under symmetric encryption.
+</li>
+</ul>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p class="a">
+Alice obtains Bob's public key. Alice generates a random key, encrypts the
+key with RSA, and encrypts the message using an AEAD under the random key.
+</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p>This is basically TLS 1.2 and older.</p>
+<p class="happy">
+<img src="/images/ic_mood_white_36px.svg">
+Mallory cannot MitM this connection without Bob's private key.
+</p>
+<p>
+Alice authenticates Bob's identity, but Bob does not know whether Alice or
+Mallory is on the other end of the connection.
+</p>
+<p class="sad">
+<img src="/images/ic_mood_bad_white_36px.svg">
+Suppose Bob's private key gets compromised and ends up in Eve and Mallory's
+possession. Any past and future traffic that Eve has recorded can be decrypted
+by Eve. Mallory can do the same as Eve, as well as impersonate Bob.
+</p>
+</div>
+<div class="notes">
+This is basically TLS 1.2 and earlier.
+<ul>
+<li>
+Obtaining the key is equivalent to the first round-trip (ClientHello,
+followed by ServerHello/Certificate/ServerHelloDone).
+</li>
+<li>
+I'm mostly ignoring how Alice knows Bob's public key is Bob's (and not
+Mallory's). Mention it chaining up to a CA.
+</li>
+</ul>
+</div>
+</div>
+
+<div class="slide">
+<h2>RSA Signing</h2>
+<div class="body">
+<p>
+A private key is used to sign a message, and anyone with the public key can
+verify.
+</p>
+<p>
+The same method for generating encryption keys can be used for generating
+signing keys. Again, <i>n</i> and <i>e</i> form the public key, while <i>d</i>
+is part of the private key. <i>m</i> is the message to sign, and <i>s</i> is
+the signature of the message.
+<ul>
+<li>Sign: <i>s = m<sup>d</sup> </i>(mod <i>n</i>)</li>
+<li>
+Verify: compute <i>s<sup>e</sup> </i>(mod <i>n</i>) and return true iff it
+equals <i>m</i>
+</li>
+</ul>
+<p>
+This is encryption/decryption with <i>e</i> and <i>d</i> reversed. This makes
+sense: with RSA encryption anyone can encrypt but only the private key holder
+can decrypt; signing is opposite where only the private key holder can sign
+but anyone can verify.
+</p>
+</div>
+</div>
+
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<div>
+<p class="a">
+Alice generates a DH key and sends the public value to Bob.
+</p>
+<p class="b">
+Bob computes a DH key and sends this to Alice.
+</p>
+<p class="b">
+Bob also computes a signature of the messages so far
+and sends this signature and the public key used for that signature to Alice.
+</p>
+<p class="a">
+Alice verifies that this is Bob's public key and verifies the signature.
+</p>
+<p style="font-size: 100%;">
+Both parties compute a shared secret from the DH values and encrypt messages
+using an AEAD with a key derived from the shared secret.
+</p>
+</div>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+<p>This is basically TLS 1.3.</p>
+<p class="happy">
+<img src="/images/ic_mood_white_36px.svg">
+If Bob's private key does not end up in anyone else's possession, Mallory cannot
+MitM this connection without Alice detecting.
+</p>
+<p class="happy">
+<img src="/images/ic_mood_white_36px.svg">
+If Eve records traffic between Alice and Bob and later gains possession of Bob's
+private key, Eve cannot decrypt past traffic.
+</p>
+<p>
+If Mallory obtains Bob's private key, Mallory can only decrypt traffic between
+Alice and Bob if Mallory actively intercepts the connection from the beginning
+of the connection and for the whole duration.
+</p>
+</div>
+</div>
+
+<!-- Template slide:
+<div class="slide">
+<h2>Title</h2>
+<div class="body">
+</div>
+</div>
+
+Template alice-and-bob slide
+<div class="slide ab">
+<div class="ab-header">
+<img class="ab-icon" src="/images/ic_account_box_white_48px.svg">
+<p>
+Setup
+</p>
+<img class="ab-icon" src="/images/ic_account_circle_white_48px.svg">
+</div>
+<div class="body">
+</div>
+</div>
+-->
+
+</body>
+</html>
